@@ -1,3 +1,5 @@
+"use strict";
+
 document.addEventListener('DOMContentLoaded', function() {
 
 	// Use buttons to toggle between views
@@ -7,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector('#compose').addEventListener('click', compose_email);
 
 	// Listen to clicks on the submit button and attempt to send email(s)
-	document.querySelector('#compose-form').addEventListener('submit', () => {
+	document.querySelector('#submit-btn').addEventListener('click', event => {
 		fetch('/emails', {
 			method: 'POST',
 			body: JSON.stringify ({
@@ -18,22 +20,30 @@ document.addEventListener('DOMContentLoaded', function() {
 		})
 		.then(response => response.json())
 		.then(result => {
-			// Once the email has been sent, load the user’s sent mailbox.
-			// load_mailbox('sent');
-			// return false;
 			console.log(result);
 		})
 
-		// Once the email has been sent, load the user’s sent mailbox.
+		// Once the email has been sent, prevent the DOM from reloading and then load the user’s sent mailbox.
+		event.preventDefault();
 		load_mailbox('sent');
-		return false;
 	})
 
-	document.querySelector('.mail-link').forEach(mail => {
-		mail.addEventListener('mouseover', () => {
-			// TODO
-		})
+	const mails = document.querySelectorAll('.mail-link');
+	mails.forEach(mail => {
+		mail.onmouseover = () => {
+			mail.style.backgroundColor = "green";
+		}
 	})
+	// document.querySelectorAll('.mail-link').forEach(mail => {
+	// 	// mail.onmouseover = () => {
+	// 	// 	console.log("Got here");
+	// 	// }
+	// 	// console.log(mail);
+	// 	mail.style.backgroundColor = "green";
+	// 	// mail.addEventListener('mouseover', () => {
+	// 	// 	this.style.backgroundColor = "green";
+	// 	// })
+	// })
 
 	// By default, load the inbox
 	load_mailbox('inbox');
@@ -60,20 +70,17 @@ function load_mailbox(mailbox) {
 	// Show the mailbox name
 	document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-	// Make an API GET request to get the last emails in this mailbox
+	// Make an API GET request to get the emails in this mailbox
 	fetch(`/emails/${mailbox}`)
 	.then(response => response.json())
 	.then(emails => {
-			// TODO
-			// console.log(result);
+		console.log(emails)
+		// TODO
+		emails.forEach(email => {
 			let li = document.createElement('li');
-			li.innerHTML = '<a class="mail-link"> <div class="sender">Marwansssssssssssssssssssssssssssssssssssssssssssss</div> <div class="subject-body">Meeting? It is a beautiful day</div> <div class="timestamp">20-Feb</div> <button class="delete">Delete</button> </a>';
-			li.className = 'mail';
-			document.querySelector('#emails-view').append(li);
-
-			li = document.createElement('li');
-			li.innerHTML = '<div class="sender">Marwan</div> <div class="subject-body">Meeting? It is a beautiful day</div> <div class="timestamp">20-Feb</div> <button class="delete">Delete</button>';
+			li.innerHTML = `<a class="mail-link"> <div class="sender">${email.sender}</div> <div class="subject-body">${email.subject} ${email.body}</div> <div class="timestamp">${email.timestamp}</div> <button class="delete">Delete</button></a>`;
 			li.className = 'mail';
 			document.querySelector('#emails-view').append(li);
 		})
+	})
 }
