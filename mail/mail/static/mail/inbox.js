@@ -21,9 +21,18 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Once the email has been sent, load the user’s sent mailbox.
 			// load_mailbox('sent');
 			// return false;
+			console.log(result);
 		})
+
+		// Once the email has been sent, load the user’s sent mailbox.
 		load_mailbox('sent');
 		return false;
+	})
+
+	document.querySelector('.mail-link').forEach(mail => {
+		mail.addEventListener('mouseover', () => {
+			// TODO
+		})
 	})
 
 	// By default, load the inbox
@@ -50,4 +59,21 @@ function load_mailbox(mailbox) {
 
 	// Show the mailbox name
 	document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+	// Make an API GET request to get the last emails in this mailbox
+	fetch(`/emails/${mailbox}`)
+	.then(response => response.json())
+	.then(emails => {
+			// TODO
+			// console.log(result);
+			let li = document.createElement('li');
+			li.innerHTML = '<a class="mail-link"> <div class="sender">Marwansssssssssssssssssssssssssssssssssssssssssssss</div> <div class="subject-body">Meeting? It is a beautiful day</div> <div class="timestamp">20-Feb</div> <button class="delete">Delete</button> </a>';
+			li.className = 'mail';
+			document.querySelector('#emails-view').append(li);
+
+			li = document.createElement('li');
+			li.innerHTML = '<div class="sender">Marwan</div> <div class="subject-body">Meeting? It is a beautiful day</div> <div class="timestamp">20-Feb</div> <button class="delete">Delete</button>';
+			li.className = 'mail';
+			document.querySelector('#emails-view').append(li);
+		})
 }

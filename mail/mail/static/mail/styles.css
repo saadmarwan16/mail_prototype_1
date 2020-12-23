@@ -1,3 +1,56 @@
 textarea {
     min-height: 400px;
 }
+
+#emails-view {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.mail-link {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.mail {
+    display: block;
+    width: 100%;
+    /* height: 100%; */
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+.sender, .subject-body, .timestamp {
+    height: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 12px;
+}
+
+.sender {
+    display: block;
+    width: calc(25% - 12px);
+    overflow: hidden;
+    float: left;
+}
+
+.subject-body {
+    display: block;
+    width: calc(60% - 12px);
+    overflow: hidden;
+    float: left;
+}
+
+.timestamp {
+    display: block;
+    width: calc(15% - 12px);
+    overflow: hidden;
+    float: left;
+}
+
+.delete {
+    display: none;
+}
