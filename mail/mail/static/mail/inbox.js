@@ -1,5 +1,3 @@
-"use strict";
-
 document.addEventListener('DOMContentLoaded', function() {
 
 	// Use buttons to toggle between views
@@ -7,9 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
 	document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
 	document.querySelector('#compose').addEventListener('click', compose_email);
+	document.querySelector('#single-mail-view').addEventListener('click', load_single_mail);
 
 	// Listen to clicks on the submit button and attempt to send email(s)
 	document.querySelector('#submit-btn').addEventListener('click', event => {
+
+		// Send an API POST request to store the data into the database
 		fetch('/emails', {
 			method: 'POST',
 			body: JSON.stringify ({
@@ -28,31 +29,29 @@ document.addEventListener('DOMContentLoaded', function() {
 		load_mailbox('sent');
 	})
 
-	const mails = document.querySelectorAll('.mail-link');
-	mails.forEach(mail => {
-		mail.onmouseover = () => {
-			mail.style.backgroundColor = "green";
+	document.querySelectorAll('.mail-link').forEach(mail => {
+		mail.onclick = () => {
+			console.log("Got here");
 		}
 	})
-	// document.querySelectorAll('.mail-link').forEach(mail => {
-	// 	// mail.onmouseover = () => {
-	// 	// 	console.log("Got here");
-	// 	// }
-	// 	// console.log(mail);
-	// 	mail.style.backgroundColor = "green";
-	// 	// mail.addEventListener('mouseover', () => {
-	// 	// 	this.style.backgroundColor = "green";
-	// 	// })
-	// })
 
 	// By default, load the inbox
 	load_mailbox('inbox');
 });
 
+function load_single_mail() {
+
+	// Show single mail view and hide other views
+	document.querySelector('#single-mail-view').style.display = 'block';
+	document.querySelector('#emails-view').style.display = 'none';
+	document.querySelector('#compose-view').style.display = 'none';
+}
+
 function compose_email() {
 
 	// Show compose view and hide other views
 	document.querySelector('#emails-view').style.display = 'none';
+	document.querySelector('#single-mail-view').style.display = 'none';
 	document.querySelector('#compose-view').style.display = 'block';
 
 	// Clear out composition fields
@@ -63,9 +62,13 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
   
-	// Show the mailbox and hide other views
-	document.querySelector('#emails-view').style.display = 'block';
+	// Show a spinner and hide other views
 	document.querySelector('#compose-view').style.display = 'none';
+	document.querySelector('#single-mail-view').style.display = 'none';
+	document.querySelector('#spinner').style.display = 'flex';
+
+	// let element = document.createElement('div');
+	// document.querySelector('#single-mail-view').append(element);
 
 	// Show the mailbox name
 	document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -74,13 +77,61 @@ function load_mailbox(mailbox) {
 	fetch(`/emails/${mailbox}`)
 	.then(response => response.json())
 	.then(emails => {
-		console.log(emails)
-		// TODO
+
+		// Hide the spinner and show the mailbox
+		document.querySelector('#spinner').style.display = 'none';
+		document.querySelector('#emails-view').style.display = 'block';
+
+		// Create a mailbox
+		let mailBox = document.createElement('div');
+		mailBox.className = "list-group";
+
+		// Add all the available mails to the mailbox
 		emails.forEach(email => {
-			let li = document.createElement('li');
-			li.innerHTML = `<a class="mail-link"> <div class="sender">${email.sender}</div> <div class="subject-body">${email.subject} ${email.body}</div> <div class="timestamp">${email.timestamp}</div> <button class="delete">Delete</button></a>`;
-			li.className = 'mail';
-			document.querySelector('#emails-view').append(li);
+
+			// Create a mail
+			let mail = document.createElement('a');
+			mail.href = '#';
+
+			// Unread emails should appear with a white background and read ones should appear with gray
+			if (email.read === false) {
+				mail.className = 'list-group-item list-group-item-action list-group-item-light mail-link';
+			} else {
+				mail.className = 'list-group-item list-group-item-action list-group-item-secondary mail-link';
+			}
+
+			// Add the name of the sender to the mail
+			let sender = document.createElement('div');
+			sender.className = 'sender';
+			sender.innerText = email.sender;
+			mail.append(sender);
+
+			// Add the subject and body to the mail
+			let subjectBody = document.createElement('div');
+			subjectBody.className = 'subject-body';
+			subjectBody.innerText = email.subject + ' ' + email.body;
+			mail.append(subjectBody);
+
+			// Add a timestamp to the mail
+			let timestampContainer = document.createElement('div');
+			let timestamp = document.createElement('small');
+			timestampContainer.className = 'timestamp';
+			timestamp.innerText = email.timestamp;
+			timestampContainer.append(timestamp);
+			mail.append(timestampContainer);
+
+			// Add a delete button to the mail
+			let button = document.createElement('button');
+			button.className = 'delete';
+			button.innerText = 'Delete';
+			mail.append(button);
+
+			// Add this mail to the mailbox
+			mailBox.append(mail)
 		})
+
+		console.log(document.querySelectorAll('.mail-link'));
+
+		document.querySelector('#emails-view').append(mailBox);
 	})
 }
