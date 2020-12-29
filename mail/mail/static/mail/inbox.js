@@ -29,11 +29,11 @@ document.addEventListener('DOMContentLoaded', function() {
 		load_mailbox('sent');
 	})
 
-	document.querySelectorAll('.mail-link').forEach(mail => {
-		mail.onclick = () => {
-			console.log("Got here");
-		}
-	})
+	// document.querySelectorAll('.mail-link').forEach(mail => {
+	// 	mail.onclick = () => {
+	// 		console.log("Got here");
+	// 	}
+	// })
 
 	// By default, load the inbox
 	load_mailbox('inbox');
@@ -68,6 +68,8 @@ function load_mailbox(mailbox) {
 	document.querySelector('#spinner').style.display = 'flex';
 
 	// let element = document.createElement('div');
+	// element.className = 'row commands';
+	// element.append(document.querySelector('#icons'));
 	// document.querySelector('#single-mail-view').append(element);
 
 	// Show the mailbox name
@@ -81,6 +83,7 @@ function load_mailbox(mailbox) {
 		// Hide the spinner and show the mailbox
 		document.querySelector('#spinner').style.display = 'none';
 		document.querySelector('#emails-view').style.display = 'block';
+		// document.querySelector('#single-mail-view') = 'display';
 
 		// Create a mailbox
 		let mailBox = document.createElement('div');
@@ -106,12 +109,25 @@ function load_mailbox(mailbox) {
 			sender.innerText = email.sender;
 			mail.append(sender);
 
-			// Add the subject and body to the mail
+			// Create a new class and give it a name
 			let subjectBody = document.createElement('div');
 			subjectBody.className = 'subject-body';
-			subjectBody.innerText = email.subject + ' ' + email.body;
-			mail.append(subjectBody);
 
+			// Add the subject to the mail
+			let subject = document.createElement('span');
+			subject.className = 'subject';
+			subject.innerText = email.subject;
+
+			// Add the body to the mail
+			let body = document.createElement('span');
+			body.className = 'body';
+			body.innerText = email.body;
+			
+			// Add the subject and body to 'subject-body' and add 'subject-body' to the mail
+			subjectBody.append(subject);
+			subjectBody.append(body);
+			mail.append(subjectBody);
+			
 			// Add a timestamp to the mail
 			let timestampContainer = document.createElement('div');
 			let timestamp = document.createElement('small');
@@ -120,17 +136,89 @@ function load_mailbox(mailbox) {
 			timestampContainer.append(timestamp);
 			mail.append(timestampContainer);
 
-			// Add a delete button to the mail
-			let button = document.createElement('button');
-			button.className = 'delete';
-			button.innerText = 'Delete';
-			mail.append(button);
+			// Add an icons container to each mail
+			let iconsContainer = document.createElement('div');
+			iconsContainer.className = 'w3-padding w3-xlarge w3-text-blue icons';
+			mail.append(iconsContainer);
+
+			// Add a delete icon
+			let deleteMail = document.createElement('a');
+			let deleteMailIcon = document.createElement('i');
+			deleteMail.title = 'Delete';
+			deleteMailIcon.innerText = 'delete';
+			deleteMailIcon.className = 'material-icons';
+			deleteMail.append(deleteMailIcon);
+			iconsContainer.append(deleteMail)
+
+			if (email.archived === false) {
+
+			// Add an archive icon
+			let archive = document.createElement('a');
+			let archiveIcon = document.createElement('i');
+			archive.title = 'Archive';
+			archiveIcon.innerText = 'archive';
+			archiveIcon.className = 'material-icons';
+			archive.append(archiveIcon);
+			iconsContainer.append(archive)
+			} else {
+
+			// Add an unarchive icon
+			let unarchive = document.createElement('a');
+			let unarchiveIcon = document.createElement('i');
+			unarchive.title = 'Unarchive';
+			unarchiveIcon.innerText = 'unarchive';
+			unarchiveIcon.className = 'material-icons';
+			unarchive.append(unarchiveIcon);
+			iconsContainer.append(unarchive)
+			}
+
+			if (email.read === false) {
+
+			// Add a mark as read icon
+			let mailRead = document.createElement('a');
+			let mailReadIcon = document.createElement('i');
+			mailRead.title = 'Mark as read';
+			mailReadIcon.innerText = 'mark_email_read';
+			mailReadIcon.className = 'material-icons';
+			mailRead.append(mailReadIcon);
+			iconsContainer.append(mailRead)
+			} else {
+
+			// Add a mark as unread icon
+			let mailUnread = document.createElement('a');
+			let mailUnreadIcon = document.createElement('i');
+			mailUnread.title = 'Mark as unread';
+			mailUnreadIcon.innerText = 'mark_email_unread';
+			mailUnreadIcon.className = 'material-icons';
+			mailUnread.append(mailUnreadIcon);
+			iconsContainer.append(mailUnread)
+			}
+
+			mail.addEventListener('mouseover', () => {
+				document.querySelectorAll('.timestamp').forEach(single => {
+					single.style.display = 'none';
+				})
+				document.querySelectorAll('.icons').forEach(icon => {
+					icon.style.display = 'flex';
+				})
+			})
+
+			mail.addEventListener('mouseout', () => {
+				document.querySelectorAll('.icons').forEach(icon => {
+					icon.style.display = 'none';
+				})
+				document.querySelectorAll('.timestamp').forEach(single => {
+					single.style.display = 'flex';
+				})
+			})
+
+			mail.addEventListener('click', () => {
+				console.log("Got here");
+			})
 
 			// Add this mail to the mailbox
 			mailBox.append(mail)
 		})
-
-		console.log(document.querySelectorAll('.mail-link'));
 
 		document.querySelector('#emails-view').append(mailBox);
 	})

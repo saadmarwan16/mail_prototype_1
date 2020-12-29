@@ -37,6 +37,11 @@ textarea {
     float: left;
 }
 
+.subject {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
 .subject-body {
     display: block;
     width: calc(60% - 12px);
@@ -54,9 +59,27 @@ textarea {
     float: left;
 }
 
-.delete {
+.icons {
     display: none;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: calc(15% - 12px);
+    float: left;
 }
+
+.material-icons {
+    font-size: 28px !important;
+    padding: 5px;
+}
+
+.material-icons:hover {
+    color: #0056b3;
+}
+
+/* .delete {
+    display: none;
+} */
 
 #spinner {
     display: none;
