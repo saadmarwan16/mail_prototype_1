@@ -82,6 +82,22 @@ textarea {
     font-size: 30px !important;
 }
 
+.person-icon-container {
+    position: relative;
+    bottom: 15px;
+}
+
+.reply-icon-container {
+    position: relative;
+    left: 45%;
+    bottom: 15px;
+}
+
+.single-mail-timestamp {
+    position: relative;
+    left: 35%;
+}
+
 .west {
     margin: 0px 100px 0px 0px;
     padding-left: 0px;
@@ -99,6 +115,23 @@ textarea {
 /* .delete {
     display: none;
 } */
+
+.commands {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+}
+
+.single-mail-subject {
+    padding-left: 50px;
+    margin-bottom: 25px;
+}
+
+.main-body {
+    padding: 1rem 45% 1rem 1rem;
+}
+
+.main-body-content {
+    margin: 0px;
+}
 
 #spinner {
     display: none;
