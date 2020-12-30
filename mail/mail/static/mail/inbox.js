@@ -55,11 +55,17 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
+
+	// Delete the contents of the previous view (if any)
+	if (document.querySelector('.contents-container') != null) {
+		const elem = document.querySelector('.contents-container');
+		document.querySelector('#single-mail-view').removeChild(elem);
+	}
   
 	// Show a spinner and hide other views
 	document.querySelector('#compose-view').style.display = 'none';
-	document.querySelector('#single-mail-view').style.display = 'block';
-	document.querySelector('#spinner').style.display = 'none';
+	document.querySelector('#single-mail-view').style.display = 'none';
+	document.querySelector('#spinner').style.display = 'flex';
 
 	// Show the mailbox name
 	document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -71,7 +77,7 @@ function load_mailbox(mailbox) {
 
 		// Hide the spinner and show the mailbox
 		document.querySelector('#spinner').style.display = 'none';
-		document.querySelector('#emails-view').style.display = 'none';
+		document.querySelector('#emails-view').style.display = 'block';
 		// document.querySelector('#single-mail-view') = 'display';
 
 		// Create a mailbox
@@ -120,14 +126,14 @@ function load_mailbox(mailbox) {
 			// Add a timestamp to the mail
 			let timestampContainer = document.createElement('div');
 			let timestamp = document.createElement('small');
-			timestampContainer.className = 'timestamp';
+			timestampContainer.className = `timestamp timestamp${email.id}`;
 			timestamp.innerText = email.timestamp;
 			timestampContainer.append(timestamp);
 			mail.append(timestampContainer);
 
 			// Add icons container to each mail
 			let iconsContainer = document.createElement('div');
-			iconsContainer.className = 'w3-padding w3-xlarge w3-text-blue icons';
+			iconsContainer.className = `w3-padding w3-xlarge w3-text-blue icons icons${email.id}`;
 			mail.append(iconsContainer);
 
 			// Add a delete icon
@@ -139,6 +145,7 @@ function load_mailbox(mailbox) {
 			deleteMail.append(deleteMailIcon);
 			iconsContainer.append(deleteMail)
 
+			// Add an archive icon if the message is unarchive else add an unarchive icon
 			if (email.archived === false) {
 
 			// Add an archive icon
@@ -161,6 +168,7 @@ function load_mailbox(mailbox) {
 			iconsContainer.append(unarchive)
 			}
 
+			// Add a mark as read icon if the mail is not read else add a mark as a mark as read icon
 			if (email.read === false) {
 
 			// Add a mark as read icon
@@ -184,25 +192,18 @@ function load_mailbox(mailbox) {
 			}
 
 			mail.addEventListener('mouseover', () => {
-				document.querySelectorAll('.timestamp').forEach(single => {
-					single.style.display = 'none';
-				})
-				document.querySelectorAll('.icons').forEach(icon => {
-					icon.style.display = 'flex';
-				})
+				document.querySelector(`.timestamp${email.id}`).style.display = 'none'
+				document.querySelector(`.icons${email.id}`).style.display = 'flex';
 			})
 
 			mail.addEventListener('mouseout', () => {
-				document.querySelectorAll('.icons').forEach(icon => {
-					icon.style.display = 'none';
-				})
-				document.querySelectorAll('.timestamp').forEach(single => {
-					single.style.display = 'flex';
-				})
+				document.querySelector(`.icons${email.id}`).style.display = 'none';
+				document.querySelector(`.timestamp${email.id}`).style.display = 'flex'
 			})
 
 			mail.addEventListener('click', () => {
 				console.log("Got here");
+				loadSingleMail(email.id, mailbox);
 			})
 
 			// Add this mail to the mailbox

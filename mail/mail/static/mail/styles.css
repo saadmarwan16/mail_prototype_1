@@ -80,6 +80,7 @@ textarea {
 
 .single-mail-icon-icon {
     font-size: 30px !important;
+    cursor: pointer;
 }
 
 .person-icon-container {
