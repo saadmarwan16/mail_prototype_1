@@ -68,8 +68,27 @@ textarea {
     float: left;
 }
 
+.single-mail-icons {
+    display: block;
+    cursor: pointer;
+    padding-left: 0px !important;
+}
+
+.single-mail-icon {
+    padding: 5px;
+}
+
+.single-mail-icon-icon {
+    font-size: 30px !important;
+}
+
+.west {
+    margin: 0px 100px 0px 0px;
+    padding-left: 0px;
+}
+
 .material-icons {
-    font-size: 28px !important;
+    /* font-size: 28px !important; */
     padding: 5px;
 }
 

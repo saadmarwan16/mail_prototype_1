@@ -29,12 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		load_mailbox('sent');
 	})
 
-	// document.querySelectorAll('.mail-link').forEach(mail => {
-	// 	mail.onclick = () => {
-	// 		console.log("Got here");
-	// 	}
-	// })
-
 	// By default, load the inbox
 	load_mailbox('inbox');
 });
@@ -64,13 +58,8 @@ function load_mailbox(mailbox) {
   
 	// Show a spinner and hide other views
 	document.querySelector('#compose-view').style.display = 'none';
-	document.querySelector('#single-mail-view').style.display = 'none';
-	document.querySelector('#spinner').style.display = 'flex';
-
-	// let element = document.createElement('div');
-	// element.className = 'row commands';
-	// element.append(document.querySelector('#icons'));
-	// document.querySelector('#single-mail-view').append(element);
+	document.querySelector('#single-mail-view').style.display = 'block';
+	document.querySelector('#spinner').style.display = 'none';
 
 	// Show the mailbox name
 	document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -82,7 +71,7 @@ function load_mailbox(mailbox) {
 
 		// Hide the spinner and show the mailbox
 		document.querySelector('#spinner').style.display = 'none';
-		document.querySelector('#emails-view').style.display = 'block';
+		document.querySelector('#emails-view').style.display = 'none';
 		// document.querySelector('#single-mail-view') = 'display';
 
 		// Create a mailbox
@@ -136,7 +125,7 @@ function load_mailbox(mailbox) {
 			timestampContainer.append(timestamp);
 			mail.append(timestampContainer);
 
-			// Add an icons container to each mail
+			// Add icons container to each mail
 			let iconsContainer = document.createElement('div');
 			iconsContainer.className = 'w3-padding w3-xlarge w3-text-blue icons';
 			mail.append(iconsContainer);
