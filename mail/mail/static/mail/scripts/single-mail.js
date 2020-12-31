@@ -14,6 +14,16 @@ function loadSingleMail(id, mailbox) {
         document.querySelector('#spinner').style.display = 'none';
         document.querySelector('#single-mail-view').style.display = 'block';
 
+        // After the email finish loading, mark it as read if it has not been read
+        if (!email.read) {
+            fetch(`/emails/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    read: true
+                })
+            })
+        }
+
         // Add a go back icon for users to be able to go back to inbox
         let back = document.createElement('a');
         let backIcon = document.createElement('i');
@@ -104,6 +114,18 @@ function loadSingleMail(id, mailbox) {
         mailUnreadIcon.className = 'material-icons single-mail-icon-icon';
         mailUnread.append(mailUnreadIcon);
 
+        mailUnread.addEventListener('click', () => {
+            // TODO
+            fetch(`/emails/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    read: false
+                })
+            })
+
+            load_mailbox(mailbox);
+        })
+
         // Put all the icons inside an icons container
         let iconsContainer = document.createElement('div');
         iconsContainer.className = 'w3-padding w3-xlarge w3-text-blue single-mail-icons';
@@ -136,25 +158,21 @@ function loadSingleMail(id, mailbox) {
         subject.innerText = email.subject;
         subjectContainer.append(subject);
 
-        // Add a mark a person icon to the DOM
-        let person = document.createElement('a');
-        let personIcon = document.createElement('i');
-        person.title = 'Sender';
-        personIcon.innerText = 'person';
-        person.className = 'single-mail-icon person-icon-container';
-        personIcon.className = 'material-icons single-mail-icon-icon';
-        person.append(personIcon);
-
         // Add the name of the sender to the DOM
         let sender = document.createElement('div');
-        sender.className = 'sender';
-        sender.innerText = email.sender;
+        sender.className = 'single-mail-sender';
+        sender.innerText = `Sender: ${email.sender}`;
+
+        // Add the names of the recipients to the DOM
+        let recipients = document.createElement('div');
+        recipients.className = 'single-mail-recipients';
+        recipients.innerText = `Recipient(s): ${email.recipients}`;
         
         // Add a timestamp to the DOM
         let timestampContainer = document.createElement('div');
         let timestamp = document.createElement('small');
-        timestampContainer.className = 'timestamp single-mail-timestamp';
-        timestamp.innerText = email.timestamp;
+        timestampContainer.className = 'single-mail-timestamp';
+        timestamp.innerText = `Timestamp: ${email.timestamp}`;
         timestampContainer.append(timestamp);
 
         // Add a reply icon to give users the option of replying to the message
@@ -169,8 +187,8 @@ function loadSingleMail(id, mailbox) {
         // Put the person icon, sender, timestamp and reply icon into a container in a row
         let content = document.createElement('div');
         content.className = 'row content';
-        content.append(person);
         content.append(sender);
+        content.append(recipients);
         content.append(timestampContainer);
         content.append(reply);
 
