@@ -74,116 +74,62 @@ function loadMails(mailbox) {
             deleteMail.append(deleteMailIcon);
             iconsContainer.append(deleteMail);
 
+            // Add an archive icon
+            let archive = document.createElement('a');
+            let archiveIcon = document.createElement('i');
+            archive.title = 'Archive';
+            archiveIcon.innerText = 'archive';
+            archiveIcon.className = 'material-icons';
+            archive.append(archiveIcon);
+            iconsContainer.append(archive);
+
+            // Add an unarchive icon
+            let unarchive = document.createElement('a');
+            let unarchiveIcon = document.createElement('i');
+            unarchive.title = 'Unarchive';
+            unarchiveIcon.innerText = 'unarchive';
+            unarchiveIcon.className = 'material-icons';
+            unarchive.append(unarchiveIcon);
+            iconsContainer.append(unarchive);
+
+            // Add a mark as read icon
+            let mailRead = document.createElement('a');
+            let mailReadIcon = document.createElement('i');
+            mailRead.title = 'Mark as read';
+            mailReadIcon.innerText = 'mark_email_read';
+            mailReadIcon.className = 'material-icons';
+            mailRead.append(mailReadIcon);
+            iconsContainer.append(mailRead);
+
+            // Add a mark as unread icon
+            let mailUnread = document.createElement('a');
+            let mailUnreadIcon = document.createElement('i');
+            mailUnread.title = 'Mark as unread';
+            mailUnreadIcon.innerText = 'mark_email_unread';
+            mailUnreadIcon.className = 'material-icons';
+            mailUnread.append(mailUnreadIcon);
+            iconsContainer.append(mailUnread);
+
             // Add an archive icon if the message is unarchive else add an unarchive icon
             if (email.archived === false) {
 
-                // Add an archive icon
-                let archive = document.createElement('a');
-                let archiveIcon = document.createElement('i');
-                archive.title = 'Archive';
-                archiveIcon.innerText = 'archive';
-                archiveIcon.className = 'material-icons';
-                archive.append(archiveIcon);
-                iconsContainer.append(archive);
-
-                // User clicks on archive
-                archive.addEventListener('click', () => {
-
-                    console.log("There is hope");
-                    console.log(mail);
-
-                    mail.style.animationPlayState = 'running';
-                    mail.addEventListener('animationend', () =>  {
-                        mail.remove();
-                    });
-
-                    // Send a PUT request to change a mail to archived
-                    fetch(`/emails/${email.id}`, {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            archived: true
-                        })
-                    })
-
-                    // After the email has been archived send the user back to the inbox
-                    // load_mailbox('inbox');
-                })
+                unarchive.style.display = 'none';
+                archive.style.display = 'block';
             } else {
 
-                // Add an unarchive icon
-                let unarchive = document.createElement('a');
-                let unarchiveIcon = document.createElement('i');
-                unarchive.title = 'Unarchive';
-                unarchiveIcon.innerText = 'unarchive';
-                unarchiveIcon.className = 'material-icons';
-                unarchive.append(unarchiveIcon);
-                iconsContainer.append(unarchive);
-
-                // User clicks on unarchive
-                unarchive.addEventListener('click', () => {
-
-                    // Send a PUT request to change a mail to unarchived
-                    fetch(`/emails/${email.id}`, {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            archived: false
-                        })
-                    })
-
-                    // After the email has been unarchived send the user back to the inbox
-                    // load_mailbox('inbox');
-                })
+                archive.style.display = 'none';
+                unarchive.style.display = 'block';
             }
 
             // Add a mark as read icon if the mail is not read else add a mark as a mark as read icon
             if (email.read === false) {
 
-                // Add a mark as read icon
-                let mailRead = document.createElement('a');
-                let mailReadIcon = document.createElement('i');
-                mailRead.title = 'Mark as read';
-                mailReadIcon.innerText = 'mark_email_read';
-                mailReadIcon.className = 'material-icons';
-                mailRead.append(mailReadIcon);
-                iconsContainer.append(mailRead);
-
-                // User clicks on mark as unreaad
-                mailRead.addEventListener('click', () => {
-
-                    // Change the status of the message to unread
-                    fetch(`/emails/${email.id}`, {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            read: false
-                        })
-                    })
-
-                    // load_mailbox(mailbox);
-                })
+                mailUnread.style.display = 'none';
+                mailRead.style.display = 'block';
             } else {
 
-                // Add a mark as unread icon
-                let mailUnread = document.createElement('a');
-                let mailUnreadIcon = document.createElement('i');
-                mailUnread.title = 'Mark as unread';
-                mailUnreadIcon.innerText = 'mark_email_unread';
-                mailUnreadIcon.className = 'material-icons';
-                mailUnread.append(mailUnreadIcon);
-                iconsContainer.append(mailUnread);
-
-                // User clicks on mark as unreaad
-                mailUnread.addEventListener('click', () => {
-
-                    // Change the status of the message to unread
-                    fetch(`/emails/${email.id}`, {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            read: false
-                        })
-                    })
-
-                    // load_mailbox(mailbox);
-                })
+                mailRead.style.display = 'none';
+                mailUnread.style.display = 'block';
             }
 
             // If user moves mouse over this email, hide timestamp and show command icons
@@ -198,9 +144,99 @@ function loadMails(mailbox) {
                 document.querySelector(`.timestamp${email.id}`).style.display = 'block';
             })
 
-            // If user clicks this email load it
-            mail.addEventListener('click', () => {
-                loadSingleMail(email.id, mailbox);
+            // Response to clicks on different parts of the mail
+            mail.addEventListener('click', event => {
+
+                // User clicks on the delete icon
+                if (event.target.className === 'material-icons' && event.target.innerText == 'delete') {
+
+                    // Animate the mail and then remove it from the DOM
+                    mail.style.animationPlayState = 'running';
+                    mail.addEventListener('animationend', () =>  {
+                        mail.remove();
+                    });
+
+                    fetch(`/emails/${email.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            trashed: true
+                        })
+                    })
+                }
+                
+                // User clicks on the archive icon
+                else if (event.target.className === 'material-icons' && event.target.innerText == 'archive') {
+
+                    // Animate the mail and then remove it from the inbox DOM view
+                    mail.style.animationPlayState = 'running';
+                    mail.addEventListener('animationend', () =>  {
+                        mail.remove();
+                    });
+
+                    // Send a PUT request to change a mail to archived
+                    fetch(`/emails/${email.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            archived: true
+                        })
+                    })
+                }
+                
+                // User clicks on the unarchive icon
+                else if(event.target.className === 'material-icons' && event.target.innerText == 'unarchive') {
+
+                    // Animate the mail and then remove it from the archive DOM view
+                    mail.style.animationPlayState = 'running';
+                    mail.addEventListener('animationend', () =>  {
+                        mail.remove();
+                    });
+
+                    // Send a PUT request to change a mail to unarchived
+                    fetch(`/emails/${email.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            archived: false
+                        })
+                    })
+                }
+                
+                // User clicks on the mark as read icon
+                else if (event.target.className === 'material-icons' && event.target.innerText == 'mark_email_read') {
+
+                    mailRead.style.display = 'none';
+                    mailUnread.style.display = 'block';
+                    // mail.classList.add('read');
+                    mail.style.backgroundColor = '#d6d8db';
+
+                    // Change the status of the message to unread
+                    fetch(`/emails/${email.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            read: true
+                        })
+                    })
+                }
+                
+                // User clicks on the mark as unread icon
+                else if (event.target.className === 'material-icons' && event.target.innerText == 'mark_email_unread') {
+
+                    mailUnread.style.display = 'none';
+                    mailRead.style.display = 'block';
+                    mail.style.backgroundColor = '#fdfdfe';
+
+                    // Change the status of the message to unread
+                    fetch(`/emails/${email.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            read: false
+                        })
+                    })
+                } 
+                
+                // User clicks on the mail
+                else {
+                    loadSingleMail(email.id, mailbox);
+                }
             })
 
             // Add this mail to the mailbox

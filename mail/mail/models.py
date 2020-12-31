@@ -15,6 +15,7 @@ class Email(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     read = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
+    trashed = models.BooleanField(default=False)
 
     def serialize(self):
         return {
@@ -25,5 +26,6 @@ class Email(models.Model):
             "body": self.body,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "read": self.read,
-            "archived": self.archived
+            "archived": self.archived,
+            "trashed": self.trashed
         }

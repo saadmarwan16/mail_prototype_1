@@ -88,6 +88,10 @@ def mailbox(request, mailbox):
         emails = Email.objects.filter(
             user=request.user, recipients=request.user, archived=True
         )
+    elif mailbox == "trash":
+        emails = Email.objects.filter(
+            user=request.user, trashed=True
+        )
     else:
         return JsonResponse({"error": "Invalid mailbox."}, status=400)
 
@@ -117,6 +121,8 @@ def email(request, email_id):
             email.read = data["read"]
         if data.get("archived") is not None:
             email.archived = data["archived"]
+        if data.get("trashed") is not None:
+            email.archived = data["trashed"]
         email.save()
         return HttpResponse(status=204)
 
