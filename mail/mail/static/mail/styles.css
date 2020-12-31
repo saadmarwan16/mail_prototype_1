@@ -2,30 +2,12 @@ textarea {
     min-height: 400px;
 }
 
-/* #emails-view {
-    padding-left: 0;
-    list-style-type: none;
-} */
-
-/* .mail-link {
-    width: 100%;
-    height: 100%;
-    display: block;
-    cursor: pointer;
-    overflow: hidden;
-} */
-
 .mail {
     display: block;
     width: 100%;
     /* height: 100%; */
     overflow: hidden;
     border: 1px solid black;
-}
-
-.subject-body {
-    height: 30px;
-    margin-left: 12px;
 }
 
 .single-mail-sender, .single-mail-recipients, .single-mail-timestamp {
@@ -40,6 +22,7 @@ textarea {
 }
 
 .subject-body {
+    height: 25px;
     display: block;
     width: calc(60% - 12px);
     overflow: hidden;
@@ -47,13 +30,43 @@ textarea {
 }
 
 .timestamp {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    text-align: right;
     height: 30px;
-    width: calc(15% - 12px);
+    width: 40%;
     overflow: hidden;
     float: left;
+}
+
+.mail-link {
+    cursor: pointer;
+    animation-name: remove;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}
+
+@keyframes remove {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+        padding: 11.25px;
+        margin-bottom: 0px;
+    }
+    75% {
+        opacity: 0;
+        height: 100%;
+        line-height: 100%;
+        padding: 11.25px;
+        margin-bottom: 0px;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
 }
 
 .icons {
@@ -62,7 +75,7 @@ textarea {
     align-items: center;
     height: 30px;
     width: calc(15% - 12px);
-    float: left;
+    float: right;
 }
 
 .single-mail-icons {
@@ -95,12 +108,11 @@ textarea {
     .reply-icon-container {
         left: 90%;
     }
-}
 
-/* .single-mail-timestamp {
-    position: relative;
-    left: 35%;
-} */
+    .icons {
+        width: calc(25% - 12px);
+    }
+}
 
 .west {
     margin: 0px 100px 0px 0px;
@@ -108,17 +120,12 @@ textarea {
 }
 
 .material-icons {
-    /* font-size: 28px !important; */
     padding: 5px;
 }
 
 .material-icons:hover {
     color: #0056b3;
 }
-
-/* .delete {
-    display: none;
-} */
 
 .commands {
     border-bottom: 1px solid rgba(0, 0, 0, 0.13);
@@ -129,20 +136,9 @@ textarea {
     margin-bottom: 25px;
 }
 
-/* .content {
-    margin-bottom: 20px;
-} */
-
 .main-body {
     padding: 1rem 45% 1rem 1rem;
 }
-
-/* .recipients {
-    height: 30px;
-    position: relative;
-    top: 25px;
-    right: 24%;
-} */
 
 .main-body-content {
     margin: 0px;

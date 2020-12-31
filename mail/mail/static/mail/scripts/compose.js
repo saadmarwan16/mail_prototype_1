@@ -3,27 +3,30 @@ function compose_email(recipient=null, subject=null) {
 	// Show compose view and hide other views
 	document.querySelector('#emails-view').style.display = 'none';
 	document.querySelector('#single-mail-view').style.display = 'none';
-	document.querySelector('#compose-view').style.display = 'block';
+    document.querySelector('#compose-view').style.display = 'block';
+    
+    emailRecipient = document.querySelector('#compose-recipients');
+    emailSubject = document.querySelector('#compose-subject');
+    emailBody = document.querySelector('#compose-body');
 
-	// if (recipient !== null && subject !== null) {
-	// 	console.log('old');
-	// 	console.log(recipient);
-	// 	console.log(subject);
-	// 	document.querySelector('#compose-recipients').disabled = 'true';
-	// 	document.querySelector('#compose-subject').disabled = 'true';
-	// 	document.querySelector('#compose-recipients').value = recipient;
-	// 	document.querySelector('#compose-subject').value = subject;
-	// 	document.querySelector('#compose-body').value = '';
-	// } else {
+    // User either trying to compose a new email or is trying to replying to an existing mail
+	if (recipient !== null && subject !== null) {
 
-		// Clear out composition fields
-		console.log("new");
-		// document.querySelector('#compose-recipients').disabled = 'false';
-		// document.querySelector('#compose-subject').disabled = 'false';
-		document.querySelector('#compose-recipients').value = '';
-		document.querySelector('#compose-subject').value = '';
-		document.querySelector('#compose-body').value = '';
-	// }
+        // Prefill the subject and the recipient with the one who sent the email
+		emailRecipient.disabled = true;
+		emailSubject.disabled = true;
+		emailRecipient.value = recipient;
+		emailSubject.value = subject;
+		emailBody.value = '';
+	} else {
+
+		// Clear out composition fields for new mail
+		emailRecipient.disabled = false;
+		emailSubject.disabled = false;
+		emailRecipient.value = '';
+		emailSubject.value = '';
+		emailBody.value = '';
+	}
 }
 
 function send_email(event) {
