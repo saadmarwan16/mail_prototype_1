@@ -36,7 +36,10 @@
 {% endblock %}
 
 {% block script %}
+    <script src="{% static 'mail/scripts/commands.js' %}"></script>
     <script src="{% static 'mail/scripts/single-mail.js' %}"></script>
     <script src="{% static 'mail/scripts/load-mails.js' %}"></script>
-    <script src="{% static 'mail/scripts/inbox.js' %}"></script>
+    <script src="{% static 'mail/scripts/compose.js' %}"></script>
+    <script src="{% static 'mail/scripts/mailbox.js' %}"></script>
+    <script src="{% static 'mail/scripts/main.js' %}"></script>
 {% endblock %}
