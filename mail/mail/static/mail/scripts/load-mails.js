@@ -124,8 +124,8 @@ function loadMails(mailbox) {
                 unarchive.style.display = 'none';
                 archive.style.display = 'none';
             } else {
-                
-                // Add an archive icon if the message is unarchive else add an unarchive icon
+
+                // Add an archive icon if the message is unarchived else add an unarchive icon
                 if (email.archived === false) {
 
                     unarchive.style.display = 'none';

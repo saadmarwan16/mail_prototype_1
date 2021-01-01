@@ -5,61 +5,26 @@ function createCommands(mailbox, email) {
     let iconsContainer = document.createElement('div');
     iconsContainer.className = 'w3-padding w3-xlarge w3-text-blue single-mail-icons';
 
-    // Add a go back icon for users to be able to go back to inbox
+    // // Add a go back icon for users to be able to go back to inbox
     let back = createSingleCommand('Go back', 'west');
     iconsContainer.append(back);
 
-    // Listen to clicks and go back once the back icon is clicked
-    back.addEventListener('click', () => {
-        const elem = document.querySelector('.contents-container');
-        document.querySelector('#single-mail-view').removeChild(elem);
-        load_mailbox(mailbox);
-    })
+    // Users can delete messages that have not been deleted already and vice versa
+    if (mailbox === 'trash') {
 
-    // Add a delete icon for deleting of current message
-    let deleteMail = createSingleCommand('Delete', 'delete');
-    iconsContainer.append(deleteMail);
+        // // Add an undelete icon for deleting of current message
+        var restore = createSingleCommand('Restore from trash', 'restore_from_trash');
+        iconsContainer.append(restore);
+    } else {
 
-    deleteMail.addEventListener('click', () => {
-
-        const elem = document.querySelector('.contents-container');
-        document.querySelector('#single-mail-view').removeChild(elem);
-
-        fetch(`/emails/${email.id}`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                trashed: true
-            })
-        })
-
-        load_mailbox(mailbox);
-    })
+        // Add a delete icon for deleting of current message
+        var deleteMail = createSingleCommand('Delete', 'delete');
+        iconsContainer.append(deleteMail);
+    }
 
     // Add a mark as unread icon to make this message unread
     let mailUnread = createSingleCommand('Mark as unread', 'mark_email_unread');
     iconsContainer.append(mailUnread);
-
-    // User clicks on mark as unreaad
-    mailUnread.addEventListener('click', () => {
-
-        const elem = document.querySelector('.contents-container');
-        document.querySelector('#single-mail-view').removeChild(elem);
-
-        // Change the status of the message to unread
-        fetch(`/emails/${email.id}`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                read: false
-            })
-        })
-
-        load_mailbox(mailbox);
-    })
-
-    // Put all the icons inside the icons container
-    iconsContainer.append(back)
-    iconsContainer.append(deleteMail)
-    iconsContainer.append(mailUnread)
     
     // Only append archive and unarchive options when the user is not the one who sent the email
     if (mailbox !== 'sent') {
@@ -71,41 +36,11 @@ function createCommands(mailbox, email) {
             var archive = createSingleCommand('Archive', 'archive');
             iconsContainer.append(archive);
 
-            // User clicks on archive
-            archive.addEventListener('click', () => {
-
-                // Send a PUT request to change a mail to archived
-                fetch(`/emails/${email.id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        archived: true
-                    })
-                })
-
-                // After the email has been archived send the user back to the inbox
-                load_mailbox('inbox');
-            })
-
         } else {
             
             // Add an unarchive icon to give users the option to unarchive the current email
             var unarchive = createSingleCommand('Unarchive', 'unarchive');
             iconsContainer.append(unarchive);
-
-            // User clicks on unarchive
-            unarchive.addEventListener('click', () => {
-
-                // Send a PUT request to change a mail to unarchived
-                fetch(`/emails/${id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        archived: false
-                    })
-                })
-
-                // After the email has been unarchived send the user back to the inbox
-                load_mailbox('inbox');
-            })
         }
     }
 
@@ -113,6 +48,95 @@ function createCommands(mailbox, email) {
     let commands = document.createElement('div');
     commands.className = 'row commands';
     commands.append(iconsContainer);
+
+    iconsContainer.addEventListener('click', event => {
+
+        // User clicks on the go back icon
+        if (event.target.className === 'material-icons single-mail-icon-icon' && event.target.innerText === 'west') {
+
+            const elem = document.querySelector('.contents-container');
+            document.querySelector('#single-mail-view').removeChild(elem);
+            load_mailbox(mailbox);
+        }
+
+        // User clicks on the delete icon
+        else if (event.target.className === 'material-icons single-mail-icon-icon' && event.target.innerText === 'delete') {
+
+            const elem = document.querySelector('.contents-container');
+            document.querySelector('#single-mail-view').removeChild(elem);
+
+            fetch(`/emails/${email.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    trashed: true
+                })
+            })
+
+            load_mailbox(mailbox);
+        }
+
+        // User clicks on the remove from trash icon
+        else if (event.target.className === 'material-icons single-mail-icon-icon' && event.target.innerText === 'restore_from_trash') {
+
+            const elem = document.querySelector('.contents-container');
+            document.querySelector('#single-mail-view').removeChild(elem);
+
+            fetch(`/emails/${email.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    trashed: false
+                })
+            })
+
+            load_mailbox(mailbox);
+        }
+        
+        // User clicks on the mark as unread icon
+        else if (event.target.className === 'material-icons single-mail-icon-icon' && event.target.innerText === 'mark_email_unread') {
+            const elem = document.querySelector('.contents-container');
+            document.querySelector('#single-mail-view').removeChild(elem);
+
+            // Change the status of the message to unread
+            fetch(`/emails/${email.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    read: false
+                })
+            })
+
+            load_mailbox(mailbox);
+        }
+
+        // User clicks on the archive icon
+        else if (event.target.className === 'material-icons single-mail-icon-icon' && event.target.innerText === 'archive') {
+
+            // Send a PUT request to change a mail to archived
+            fetch(`/emails/${email.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    archived: true
+                })
+            })
+
+            // After the email has been archived send the user back to the inbox
+            load_mailbox('inbox');
+        }
+
+        // User clicks on the unarchive icon
+        else if (event.target.className === 'material-icons single-mail-icon-icon' && event.target.innerText === 'unarchive') {
+
+            // Send a PUT request to change a mail to archived
+            fetch(`/emails/${email.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    archived: false
+                })
+            })
+
+            // After the email has been archived send the user back to the inbox
+            load_mailbox('inbox');
+        }
+    })
 
     return commands
 }
