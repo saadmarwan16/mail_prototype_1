@@ -1,4 +1,4 @@
-function compose_email(recipient=null, subject=null) {
+function compose_email(recipient=null, subject=null, timestamp=null, body=null) {
 
 	// Show compose view and hide other views
 	document.querySelector('#emails-view').style.display = 'none';
@@ -16,8 +16,8 @@ function compose_email(recipient=null, subject=null) {
 		emailRecipient.disabled = true;
 		emailSubject.disabled = true;
 		emailRecipient.value = recipient;
-		emailSubject.value = subject;
-		emailBody.value = '';
+		emailSubject.value = `Re: ${subject}`;
+		emailBody.value = `On ${timestamp} ${recipient} wrote: ${body}`;
 	} else {
 
 		// Clear out composition fields for new mail

@@ -20,6 +20,21 @@ function createCommands(mailbox, email) {
     let deleteMail = createSingleCommand('Delete', 'delete');
     iconsContainer.append(deleteMail);
 
+    deleteMail.addEventListener('click', () => {
+
+        const elem = document.querySelector('.contents-container');
+        document.querySelector('#single-mail-view').removeChild(elem);
+
+        fetch(`/emails/${email.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                trashed: true
+            })
+        })
+
+        load_mailbox(mailbox);
+    })
+
     // Add a mark as unread icon to make this message unread
     let mailUnread = createSingleCommand('Mark as unread', 'mark_email_unread');
     iconsContainer.append(mailUnread);
@@ -27,8 +42,11 @@ function createCommands(mailbox, email) {
     // User clicks on mark as unreaad
     mailUnread.addEventListener('click', () => {
 
+        const elem = document.querySelector('.contents-container');
+        document.querySelector('#single-mail-view').removeChild(elem);
+
         // Change the status of the message to unread
-        fetch(`/emails/${id}`, {
+        fetch(`/emails/${email.id}`, {
             method: 'PUT',
             body: JSON.stringify({
                 read: false
@@ -57,7 +75,7 @@ function createCommands(mailbox, email) {
             archive.addEventListener('click', () => {
 
                 // Send a PUT request to change a mail to archived
-                fetch(`/emails/${id}`, {
+                fetch(`/emails/${email.id}`, {
                     method: 'PUT',
                     body: JSON.stringify({
                         archived: true

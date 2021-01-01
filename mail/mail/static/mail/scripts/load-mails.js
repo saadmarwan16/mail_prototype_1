@@ -74,6 +74,15 @@ function loadMails(mailbox) {
             deleteMail.append(deleteMailIcon);
             iconsContainer.append(deleteMail);
 
+            // Add a restore from trash icon
+            let restore = document.createElement('a');
+            let restoreIcon = document.createElement('i');
+            restore.title = 'Restore from trash';
+            restoreIcon.innerText = 'restore_from_trash';
+            restoreIcon.className = 'material-icons';
+            restore.append(restoreIcon);
+            iconsContainer.append(restore);
+
             // Add an archive icon
             let archive = document.createElement('a');
             let archiveIcon = document.createElement('i');
@@ -110,15 +119,22 @@ function loadMails(mailbox) {
             mailUnread.append(mailUnreadIcon);
             iconsContainer.append(mailUnread);
 
-            // Add an archive icon if the message is unarchive else add an unarchive icon
-            if (email.archived === false) {
-
+            // Users cannot archive emials they sent themselves
+            if (mailbox === 'sent') {
                 unarchive.style.display = 'none';
-                archive.style.display = 'block';
-            } else {
-
                 archive.style.display = 'none';
-                unarchive.style.display = 'block';
+            } else {
+                
+                // Add an archive icon if the message is unarchive else add an unarchive icon
+                if (email.archived === false) {
+
+                    unarchive.style.display = 'none';
+                    archive.style.display = 'block';
+                } else {
+
+                    archive.style.display = 'none';
+                    unarchive.style.display = 'block';
+                }
             }
 
             // Add a mark as read icon if the mail is not read else add a mark as a mark as read icon
@@ -130,6 +146,15 @@ function loadMails(mailbox) {
 
                 mailRead.style.display = 'none';
                 mailUnread.style.display = 'block';
+            }
+
+            // Add a restore icon if the email is in the trash, otherwise add a delete icon
+            if (mailbox === 'trash') {
+                deleteMail.style.display = 'none';
+                restore.style.display = 'block';
+            } else {
+                restore.style.display = 'none';
+                deleteMail.style.display = 'block';
             }
 
             // If user moves mouse over this email, hide timestamp and show command icons
@@ -148,7 +173,7 @@ function loadMails(mailbox) {
             mail.addEventListener('click', event => {
 
                 // User clicks on the delete icon
-                if (event.target.className === 'material-icons' && event.target.innerText == 'delete') {
+                if (event.target.className === 'material-icons' && event.target.innerText === 'delete') {
 
                     // Animate the mail and then remove it from the DOM
                     mail.style.animationPlayState = 'running';
@@ -163,9 +188,26 @@ function loadMails(mailbox) {
                         })
                     })
                 }
+
+                // User clicks on the restore from trash icon
+                else if (event.target.className === 'material-icons' && event.target.innerText === 'restore_from_trash') {
+
+                    // Animate the mail and then remove it from the DOM
+                    mail.style.animationPlayState = 'running';
+                    mail.addEventListener('animationend', () =>  {
+                        mail.remove();
+                    });
+
+                    fetch(`/emails/${email.id}`, {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            trashed: false
+                        })
+                    })
+                }
                 
                 // User clicks on the archive icon
-                else if (event.target.className === 'material-icons' && event.target.innerText == 'archive') {
+                else if (event.target.className === 'material-icons' && event.target.innerText === 'archive') {
 
                     // Animate the mail and then remove it from the inbox DOM view
                     mail.style.animationPlayState = 'running';
@@ -183,7 +225,7 @@ function loadMails(mailbox) {
                 }
                 
                 // User clicks on the unarchive icon
-                else if(event.target.className === 'material-icons' && event.target.innerText == 'unarchive') {
+                else if(event.target.className === 'material-icons' && event.target.innerText === 'unarchive') {
 
                     // Animate the mail and then remove it from the archive DOM view
                     mail.style.animationPlayState = 'running';
@@ -201,12 +243,12 @@ function loadMails(mailbox) {
                 }
                 
                 // User clicks on the mark as read icon
-                else if (event.target.className === 'material-icons' && event.target.innerText == 'mark_email_read') {
+                else if (event.target.className === 'material-icons' && event.target.innerText === 'mark_email_read') {
 
                     mailRead.style.display = 'none';
                     mailUnread.style.display = 'block';
-                    // mail.classList.add('read');
-                    mail.style.backgroundColor = '#d6d8db';
+                    mail.classList.remove('list-group-item-light');
+                    mail.classList.add('list-group-item-secondary');
 
                     // Change the status of the message to unread
                     fetch(`/emails/${email.id}`, {
@@ -218,11 +260,12 @@ function loadMails(mailbox) {
                 }
                 
                 // User clicks on the mark as unread icon
-                else if (event.target.className === 'material-icons' && event.target.innerText == 'mark_email_unread') {
+                else if (event.target.className === 'material-icons' && event.target.innerText === 'mark_email_unread') {
 
                     mailUnread.style.display = 'none';
                     mailRead.style.display = 'block';
-                    mail.style.backgroundColor = '#fdfdfe';
+                    mail.classList.remove('list-group-item-secondary');
+                    mail.classList.add('list-group-item-light');
 
                     // Change the status of the message to unread
                     fetch(`/emails/${email.id}`, {

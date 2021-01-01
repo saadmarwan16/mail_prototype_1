@@ -61,7 +61,7 @@ function loadSingleMail(id, mailbox) {
 
         // User clicks on the reply icon
         reply.addEventListener('click', () => {
-            compose_email(email.sender, email.subject);
+            compose_email(email.sender, email.subject, email.timestamp, email.body);
         })
 
         // Put the person icon, sender, timestamp and reply icon into a container in a row

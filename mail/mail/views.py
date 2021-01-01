@@ -78,11 +78,11 @@ def mailbox(request, mailbox):
     # Filter emails returned based on mailbox
     if mailbox == "inbox":
         emails = Email.objects.filter(
-            user=request.user, recipients=request.user, archived=False
+            user=request.user, recipients=request.user, archived=False, trashed=False
         )
     elif mailbox == "sent":
         emails = Email.objects.filter(
-            user=request.user, sender=request.user
+            user=request.user, sender=request.user, trashed=False
         )
     elif mailbox == "archive":
         emails = Email.objects.filter(
@@ -122,7 +122,7 @@ def email(request, email_id):
         if data.get("archived") is not None:
             email.archived = data["archived"]
         if data.get("trashed") is not None:
-            email.archived = data["trashed"]
+            email.trashed = data["trashed"]
         email.save()
         return HttpResponse(status=204)
 
