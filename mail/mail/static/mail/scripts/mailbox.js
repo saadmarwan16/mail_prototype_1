@@ -15,6 +15,6 @@ function load_mailbox(mailbox) {
 	document.querySelector('#single-mail-view').style.display = 'none';
 	document.querySelector('#spinner').style.display = 'flex';
 
-	// Artificially wait for 1 second and load mailbox
-	setTimeout(loadMails(mailbox), 1000);
+	// Artificially wait for half a second and load mailbox
+	setTimeout(loadMails(mailbox), 500);
 }
