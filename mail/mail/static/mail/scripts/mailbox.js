@@ -16,6 +16,5 @@ function load_mailbox(mailbox) {
 	document.querySelector('#spinner').style.display = 'flex';
 
 	// Artificially wait for half a second and load mailbox
-	// setTimeout(loadMails(mailbox), 500);
 	loadMails(mailbox)
 }
