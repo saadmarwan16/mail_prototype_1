@@ -10,9 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listen to clicks on the submit button and attempt to send email(s)
 	document.querySelector('#submit-btn').addEventListener('click', event => {
 
-        // Send the email, prevent the form from loading and load the sent mailbox
+		// Send the email, prevent the form from loading and load the sent mailbox
         send_email(event);
-		event.preventDefault();
 		load_mailbox('sent');
 	})
 
